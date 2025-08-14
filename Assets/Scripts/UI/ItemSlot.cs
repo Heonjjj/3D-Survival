@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class ItemSlot : MonoBehaviour
 {
     public ItemData item;
-
     public UIInventory inventory;
     public Button button;
     public Image icon;
@@ -22,12 +21,10 @@ public class ItemSlot : MonoBehaviour
     {
         outline = GetComponent<Outline>();
     }
-
     private void OnEnable()
     {
         outline.enabled = equipped;
     }
-
     public void Set()
     {
         icon.gameObject.SetActive(true);
@@ -39,14 +36,12 @@ public class ItemSlot : MonoBehaviour
             outline.enabled = equipped;
         }
     }
-
     public void Clear()
     {
         item = null;
         icon.gameObject.SetActive(false);
         quantityText.text = string.Empty;
     }
-
     public void OnClickButton()
     {
         inventory.SelectItem(index);

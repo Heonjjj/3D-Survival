@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviour
     private float camcurXRot; //?
     public float lookSensitivity;
     private Vector2 mouseDelta;
-    public bool canLook = true;
 
+    public bool canLook = true;
     public Action inventory;
     private Rigidbody _rigidbody;
 
@@ -112,11 +112,11 @@ public class PlayerController : MonoBehaviour
             ToggleCursor();
         }
     }
-
     void ToggleCursor()
     {
         bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
+        Time.timeScale = toggle ? 0f : 1f;
     }
 }

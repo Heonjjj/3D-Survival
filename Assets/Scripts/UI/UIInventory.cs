@@ -26,7 +26,6 @@ public class UIInventory : MonoBehaviour
 
     ItemData selectedItem;
     int selectedItemIndex = 0;
-
     int curEquipIndex;
 
     private void Start()
@@ -48,46 +47,31 @@ public class UIInventory : MonoBehaviour
             slots[i].inventory = this;
             slots[i].Clear();
         }
-        ClearSelectedItemWindow();
+        Clear();
     }
-
-    void ClearSelectedItemWindow()
+    void Clear()
     {
         selectedItem = null;
-
         selectedItemName.text = string.Empty;
         selectedItemDescription.text = string.Empty;
         selectedStatName.text = string.Empty;
         selectedStatValue.text = string.Empty;
-
         useButton.SetActive(false);
         equipButton.SetActive(false);
         unequipButton.SetActive(false);
         dropButton.SetActive(false);
     }
-
     public void Toggle()
     {
-        if (IsOpen())
-        {
+        if (inventoryWindow.activeInHierarchy)
             inventoryWindow.SetActive(false);
-        }
         else
-        {
-            inventoryWindow.SetActive(true)
-;       }
+            inventoryWindow.SetActive(true);
     }
-
-    public bool IsOpen()
-    {
-        return inventoryWindow.activeInHierarchy;
-    }
-
     void AddItem()
     {
         ItemData data = CharacterManager.Instance.Player.itemData;
-
-        if (data.canStack)
+        if (data.canStack) //중복가능한지
         {
             ItemSlot slot = GetItemStack(data);
             if(slot != null)
@@ -98,10 +82,8 @@ public class UIInventory : MonoBehaviour
                 return;
             }
         }
-
         ItemSlot emptySlot = GetEmptySlot();
-
-        if(emptySlot != null)
+        if(emptySlot != null) //빈칸있는지
         {
             emptySlot.item = data;
             emptySlot.quantity = 1;
@@ -109,16 +91,14 @@ public class UIInventory : MonoBehaviour
             CharacterManager.Instance.Player.itemData = null;
             return;
         }
-
         ThrowItem(data);
         CharacterManager.Instance.Player.itemData = null;
     }
-
     void UpdateUI()
     {
         for(int i = 0; i<slots.Length; i++)
         {
-            if(slots[i].item != null)
+            if(slots[i].item != null) //슬롯에 데이터가 있다면 세팅해줘라
             {
                 slots[i].Set();
             }
@@ -128,7 +108,6 @@ public class UIInventory : MonoBehaviour
             }
         }
     }
-
     ItemSlot GetItemStack(ItemData data)
     {
         for(int i=0; i<slots.Length; i++)
@@ -140,7 +119,6 @@ public class UIInventory : MonoBehaviour
         }
         return null;
     }
-
     ItemSlot GetEmptySlot()
     {
         for(int i=0; i<slots.Length; i++)
@@ -152,12 +130,10 @@ public class UIInventory : MonoBehaviour
         }
         return null;
     }
-
     public void ThrowItem(ItemData data)
     {
         Instantiate(data.dropPrefab, dropPosition.position, Quaternion.Euler(Vector3.one * Random.value * 360));
     }
-
     public void SelectItem(int index)
     {
         if (slots[index].item == null) return;
@@ -171,7 +147,7 @@ public class UIInventory : MonoBehaviour
         selectedStatName.text = string.Empty;
         selectedStatValue.text = string.Empty;
 
-        for(int i =0; i<selectedItem.consumables.Length; i++)
+        for(int i =0; i<selectedItem.consumables.Count; i++)
         {
             selectedStatName.text += selectedItem.consumables[i].type.ToString() + "\n";
             selectedStatValue.text += selectedItem.consumables[i].value.ToString() + "\n";
@@ -182,12 +158,11 @@ public class UIInventory : MonoBehaviour
         unequipButton.SetActive(selectedItem.type == ItemType.Equipable && slots[index].equipped);
         dropButton.SetActive(true);
     }
-
     public void OnUseButton()
     {
         if(selectedItem.type == ItemType.Consumable)
         {
-            for(int i =0; i<selectedItem.consumables.Length; i++)
+            for(int i =0; i<selectedItem.consumables.Count; i++)
             {
                 switch(selectedItem.consumables[i].type)
                 {
@@ -202,13 +177,11 @@ public class UIInventory : MonoBehaviour
             RemoveSelectedItem();
         }
     }
-
     public void OnDropButton()
     {
         ThrowItem(selectedItem);
         RemoveSelectedItem();
     }
-
     void RemoveSelectedItem()
     {
         slots[selectedItemIndex].quantity--;
@@ -218,11 +191,10 @@ public class UIInventory : MonoBehaviour
             selectedItem = null;
             slots[selectedItemIndex].item = null;
             selectedItemIndex = -1;
-            ClearSelectedItemWindow();
+            Clear();
         }
         UpdateUI();
     }
-
     public void OnEquipButton()
     {
         if (slots[curEquipIndex].equipped)
@@ -237,7 +209,6 @@ public class UIInventory : MonoBehaviour
         
         SelectItem(selectedItemIndex);
     }
-
     void UnEquip(int index)
     {
         slots[index].equipped = false;
@@ -249,7 +220,6 @@ public class UIInventory : MonoBehaviour
             SelectItem(selectedItemIndex);
         }
     }
-
     public void OnUnEquipButton()
     {
         UnEquip(selectedItemIndex);

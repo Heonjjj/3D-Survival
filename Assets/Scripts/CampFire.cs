@@ -19,7 +19,6 @@ public class CampFire : MonoBehaviour
             things[i].TakePhysicalDamage(damage);
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out IDamageble damageIbe))

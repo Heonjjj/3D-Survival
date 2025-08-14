@@ -10,11 +10,10 @@ public class DamageIndicator : MonoBehaviour
 
     private Coroutine coroutine;
 
-    private void Start()
+    private void OnEnable()
     {
         CharacterManager.Instance.Player.condition.onTakeDamage += Flash;
     }
-
     public void Flash()
     {
         if(coroutine != null)
@@ -26,7 +25,13 @@ public class DamageIndicator : MonoBehaviour
         image.color = new Color(1f, 100f / 255f, 100f / 255f);
         coroutine = StartCoroutine(FadeAway());
     }
-
+    private void OnDisable()
+    {
+        if(CharacterManager.Instance.Player != null)
+        {
+            CharacterManager.Instance.Player.condition.onTakeDamage -= Flash;
+        }
+    }
     private IEnumerator FadeAway()
     {
         float startAlpha = 0.3f;
@@ -38,7 +43,6 @@ public class DamageIndicator : MonoBehaviour
             image.color = new Color(1f, 100f / 255f, 100f / 255f, a);
             yield return null;
         }
-
         image.enabled = false;
     }
 }
